@@ -1,11 +1,17 @@
 const USER_MODEL = require("../model/user.model");
-const { generateToken } = require("../utils/generateToken");
+const {
+  generateToken,
+  generateAccessToken,
+} = require("../utils/generateToken");
+const ERROR_RESPONSE = require("../utils/handleError");
+const bcrypt = require("bcrypt");
 
 module.exports.signup = async (req, res) => {
   try {
     const {
       firstName = "",
       familyName = "",
+      googleId = "",
       email = "",
       mobile = "",
       password = "",
@@ -14,16 +20,7 @@ module.exports.signup = async (req, res) => {
       isPremiumTaken = false,
     } = req.body;
 
-    if (
-      !firstName ||
-      !familyName ||
-      !email ||
-      !mobile ||
-      !password ||
-      !role ||
-      !isSubscribed ||
-      !isPremiumTaken
-    ) {
+    if (!firstName || !familyName || !email || !mobile || !password || !role) {
       return res.status(201).json({
         success: false,
         message: "Please provide all the required details",
@@ -45,9 +42,6 @@ module.exports.signup = async (req, res) => {
       email,
       mobile,
       password,
-      resume,
-      cv,
-      coverLetter,
       role,
       isSubscribed,
       isPremiumTaken,
@@ -58,15 +52,15 @@ module.exports.signup = async (req, res) => {
         .status(201)
         .json({ sucess: false, message: "User not created" });
     }
-
-    const token = await generateToken(newUser);
+    console.log(newUser);
+    const token = await generateAccessToken(newUser?._id, res);
+    const cookieName = newUser.role;
     res
       .status(200)
-      .json({ success: true, message: "User already registered", token });
+      .cookie(cookieName, token, { httpOnly: true, secure: true })
+      .json({ success: true, token, message: "User signup successfully" });
   } catch (error) {
-    return res
-      .status(200)
-      .json({ success: false, message: "Internal error", error });
+    ERROR_RESPONSE(res, error);
   }
 };
 
@@ -82,25 +76,28 @@ module.exports.login = async (req, res) => {
 
     const user = await USER_MODEL.findOne({ email });
     if (!user) {
-      return res
-        .status(203)
-        .json({ success: false, message: "User not registered" });
+      return res.status(203).json({
+        success: false,
+        message: "User not registered,please register first",
+      });
     }
+    console.log(user);
 
-    const matchPassword = await USER_MODEL.comparePassword(password);
+    const matchPassword = await bcrypt.compare(password, user.password);
     if (!matchPassword) {
       return res
         .status(201)
         .json({ success: false, message: "Input incorrect" });
     }
-    const token = user.generateToken();
+    const token = await generateAccessToken(user?._id, res);
+    console.log(token, "difudi");
 
+    const cookieName = user.role;
     res
       .status(200)
+      .cookie(cookieName, token, { httpOnly: true, secure: true })
       .json({ success: true, token, message: "User login successfully" });
   } catch (error) {
-    return res
-      .status(200)
-      .json({ success: false, message: "Internal error", error });
+    ERROR_RESPONSE(res, error);
   }
 };

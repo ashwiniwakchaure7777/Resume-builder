@@ -79,7 +79,7 @@ const resumeSchema = new mongoose.Schema(
     ],
     work: [
       {
-        position: {
+        workPosition: {
           type: String,
         },
         company: {
@@ -110,12 +110,6 @@ const resumeSchema = new mongoose.Schema(
         certificateName: {
           type: String,
         },
-        startDate: {
-          type: Date,
-        },
-        endDate: {
-          type: Date,
-        },
         certificateDescription: {
           type: String,
         },
@@ -141,12 +135,6 @@ const resumeSchema = new mongoose.Schema(
       {
         achievementName: {
           type: String,
-        },
-        startDate: {
-          type: Date,
-        },
-        endDate: {
-          type: Date,
         },
         achievementDescription: {
           type: String,
@@ -176,3 +164,5 @@ const resumeSchema = new mongoose.Schema(
 
 
 const RESUME_MODEL = mongoose.model("resume",resumeSchema);
+
+module.exports = RESUME_MODEL;

@@ -1,14 +1,13 @@
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+const ERROR_RESPONSE = require("./handleError");
+const USER_MODEL = require("../model/user.model");
 
-module.exports.generateToken = async(user)=>{
+module.exports.generateAccessToken = async (id,res) => {
     try{
-        const token = await jwt.sign(user,process.env.JWT_SECRET_KEY,{expiresIn:'7d'});
-        
-        const cookieName = user.role;
-
-        res.status(200).cookie(cookieName,token);
-        
-    }catch(error){
-        return res.status(500).json({success:false,message:"false",error})
+      const payload = { id };
+      const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
+      return token;
+    }catch(err){
+      ERROR_RESPONSE(res,err)
     }
-}
+};

@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
+const validator = require('validator');
+const { default: isEmail } = require("validator/lib/isEmail");
 
-const resumeSchema = new mongoose.Schema(
+const cvSchema = new mongoose.Schema(
   {
     fullName: {
       type: String,
@@ -20,9 +22,11 @@ const resumeSchema = new mongoose.Schema(
       {
         email: {
             type: String,
+            validator:[validator.isEmail,"Please provide valid email"]
         },
         phoneNumber: {
           type: String,
+          length:[10,"Please provide 10 number phonne number"]
         },
         country: {
           type: String,
@@ -175,4 +179,6 @@ const resumeSchema = new mongoose.Schema(
 );
 
 
-const RESUME_MODEL = mongoose.model("resume",resumeSchema);
+const CV_MODEL = mongoose.model("cv",cvSchema);
+
+module.exports = CV_MODEL;

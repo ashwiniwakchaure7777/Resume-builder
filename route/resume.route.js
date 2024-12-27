@@ -8,7 +8,6 @@ route.use(authentication);
 
 route.post("/create-resume",resumeController?.createUpdateResume);
 route.get("/get-resume",resumeController?.getResume);
-route.put("/update-resume", resumeController?.updateResume);
 route.delete("/delete-resume",resumeController?.deleteResume);
 
 

@@ -27,7 +27,7 @@ module.exports.signup = async (req, res) => {
       });
     }
 
-    const user = await USER_MODEL.findOne({ email });
+    const user = await findUserDetail({ email },res);
 
     if (user) {
       return res

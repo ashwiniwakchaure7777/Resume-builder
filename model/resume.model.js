@@ -11,7 +11,7 @@ const resumeSchema = new mongoose.Schema(
       ref: "user",
     },
     position: {
-        type: String,
+      type: String,
     },
     objective: {
       type: String,
@@ -19,7 +19,7 @@ const resumeSchema = new mongoose.Schema(
     mainContact: [
       {
         email: {
-            type: String,
+          type: String,
         },
         phoneNumber: {
           type: String,
@@ -35,26 +35,28 @@ const resumeSchema = new mongoose.Schema(
         },
       },
     ],
-    socialContact: [{
-        linkedinDetails:{
-            type: String,
+    socialContact: [
+      {
+        linkedinDetails: {
+          type: String,
         },
-        twitter:{
-            type: String,
+        twitter: {
+          type: String,
         },
-        facebook:{
-            type: String,
+        facebook: {
+          type: String,
         },
-        quora:{
-            type: String,
+        quora: {
+          type: String,
         },
-        github:{
-            type: String,
+        github: {
+          type: String,
         },
-        instagram:{
-            type: String,
-        }
-    }],
+        instagram: {
+          type: String,
+        },
+      },
+    ],
     education: [
       {
         studyProgram: {
@@ -65,9 +67,11 @@ const resumeSchema = new mongoose.Schema(
         },
         startDate: {
           type: Date,
+          default: new Date(),
         },
         endDate: {
           type: Date,
+          default: new Date(),
         },
         cityCountryCGPA: {
           type: String,
@@ -87,9 +91,11 @@ const resumeSchema = new mongoose.Schema(
         },
         startDate: {
           type: Date,
+          default: new Date(),
         },
         endDate: {
           type: Date,
+          default: new Date(),
         },
         companyDescription: {
           type: String,
@@ -122,9 +128,11 @@ const resumeSchema = new mongoose.Schema(
         },
         startDate: {
           type: Date,
+          default: new Date(),
         },
         endDate: {
           type: Date,
+          default: new Date(),
         },
         projectDescription: {
           type: String,
@@ -162,7 +170,6 @@ const resumeSchema = new mongoose.Schema(
   }
 );
 
-
-const RESUME_MODEL = mongoose.model("resume",resumeSchema);
+const RESUME_MODEL = mongoose.model("resume", resumeSchema);
 
 module.exports = RESUME_MODEL;

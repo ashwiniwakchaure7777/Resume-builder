@@ -18,12 +18,20 @@ module.exports.findResume = async (query, res) => {
   }
 };
 
-module.exports.findandUpdateResume = async (query, update,options,res) => {
-    try {
-      const resume = await RESUME_MODEL.findOneAndUpdate(query);
-      return resume;
-    } catch (error) {
-      ERROR_RESPONSE(res, error);
-    }
-  };
-  
+module.exports.findandUpdateResume = async (query, update, options, res) => {
+  try {
+    const resume = await RESUME_MODEL.findOneAndUpdate(query, update, options);
+    return resume;
+  } catch (error) {
+    ERROR_RESPONSE(res, error);
+  }
+};
+
+module.exports.deleteResumeService = async (query, res) => {
+  try {
+    const resume = await RESUME_MODEL.findOneAndDelete(query);
+    return resume;
+  } catch (error) {
+    ERROR_RESPONSE(res, error);
+  }
+};

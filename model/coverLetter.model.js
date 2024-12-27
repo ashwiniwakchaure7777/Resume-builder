@@ -9,7 +9,7 @@ const coverLetterSchema = new mongoose.Schema(
     hiringManagerName: {
       type: String,
     },
-    companyDetails: {
+    companyDetails: [{
       companyName: {
         type: String,
       },
@@ -28,7 +28,7 @@ const coverLetterSchema = new mongoose.Schema(
       zipcode: {
         type: String,
       },
-    },
+    }],
     coverLetterData: {
       type: String,
     },
@@ -38,6 +38,6 @@ const coverLetterSchema = new mongoose.Schema(
   }
 );
 
-const COVER_LETTER_SCHEMA = mongoose.model("coverLetter", coverLetterSchema);
+const COVER_LETTER_MODEL = mongoose.model("coverLetter", coverLetterSchema);
 
-module.exports = coverLetterSchema;
+module.exports = COVER_LETTER_MODEL;

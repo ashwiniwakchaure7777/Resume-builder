@@ -3,6 +3,8 @@ const { dbConnection } = require("./config/dbConnection");
 require("dotenv").config();
 const userRoute = require("./route/user.route");
 const resumeRoute = require("./route/resume.route");
+const cvRoute = require("./route/cv.route");
+const coverLetterRoute = require("./route/coverLetter.route");
 const googleAuthRoute = require("./route/googleAuth.route");
 const passport = require("./config/passport");
 const session = require("express-session");
@@ -30,6 +32,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use("/api/user", userRoute);
 app.use("/api/resume",resumeRoute);
+app.use("/api/cv",cvRoute);
+app.use("/api/coverletter",coverLetterRoute);
 
 app.get("/", (req, res) => {
   res.send("<a href='/auth/google'>Login with Google</a>");

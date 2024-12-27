@@ -1,8 +1,10 @@
 const RESUME_MODEL = require("../model/resume.model");
 const USER_MODEL = require("../model/user.model");
-const { findResume, findandUpdateResume } = require("../service/resume.service");
+const {
+  findResume,
+  findandUpdateResume,
+} = require("../service/resume.service");
 const ERROR_RESPONSE = require("../utils/handleError");
-
 
 module.exports.createUpdateResume = async (req, res) => {
   try {
@@ -22,13 +24,11 @@ module.exports.createUpdateResume = async (req, res) => {
       skills = [],
     } = req.body;
 
-    // Use `req.user` from authentication middleware
     const userId = req.user._id;
+    console.log(req.body);
 
-    // Check if a resume already exists for this user
-    const isResume = await findResume(userId);
+    const isResume = await findResume({ userId }, res);
 
-    // Build the payload
     const payload = {
       fullName,
       userId,
@@ -46,34 +46,42 @@ module.exports.createUpdateResume = async (req, res) => {
       skills,
     };
 
-    let resume;
+    console.log("payload", payload);
 
-    if (isResume) {
-      // Update existing resume
-      resume = await findandUpdateResume({ userId }, payload, { new: true, upsert: true });
-    } else {
-      // Create a new resume
-      resume = await new RESUME_MODEL(payload).save(); // Replace `RESUME_MODEL` with your model
-    }
+    let resume = await findandUpdateResume(
+      { userId },
+      payload,
+      { new: true, upsert: true },
+      res
+    );
 
-    // Send success response
-    res.status(200).json({ success: true, message: "Resume created or updated successfully", resume });
+    res.status(200).json({
+      success: true,
+      message: "Resume created or updated successfully",
+      resume,
+    });
   } catch (error) {
-    // Handle errors
     ERROR_RESPONSE(res, error);
   }
 };
-
 
 module.exports.getResume = async (req, res) => {
   try {
-  } catch (error) {
-    ERROR_RESPONSE(res, error);
-  }
-};
+    const user = req.user;
 
-module.exports.updateResume = async (req, res) => {
-  try {
+    const isResume = await findResume({ userId: user._id },res);
+
+    if (!isResume) {
+      return res.status(201).json({
+        success: false,
+        message: "resume not found",
+      });
+    }
+    return res.status(201).json({
+      success: true,
+      message: "Resume fetched successfully",
+      isResume,
+    });
   } catch (error) {
     ERROR_RESPONSE(res, error);
   }
@@ -81,6 +89,23 @@ module.exports.updateResume = async (req, res) => {
 
 module.exports.deleteResume = async (req, res) => {
   try {
+    const user = req.user;
+
+    const isResume = await findResume({ userId: user._id },res);
+
+    if (!isResume) {
+      return res.status(201).json({
+        success: false,
+        message: "resume not found",
+      });
+    }
+
+    await RESUME_MODEL.deleteOne({ userId: user._id },res);
+
+    return res.status(201).json({
+      success: true,
+      message: "Resume deleted successfully",
+    });
   } catch (error) {
     ERROR_RESPONSE(res, error);
   }

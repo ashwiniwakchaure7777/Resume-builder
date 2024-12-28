@@ -9,6 +9,7 @@ const googleAuthRoute = require("./route/googleAuth.route");
 const passport = require("./config/passport");
 const session = require("express-session");
 const cors = require("cors");
+const { cleanupBlacklist } = require("./utils/cleanupBlacklist ");
 
 const app = express();
 
@@ -31,9 +32,9 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use("/api/user", userRoute);
-app.use("/api/resume",resumeRoute);
-app.use("/api/cv",cvRoute);
-app.use("/api/coverletter",coverLetterRoute);
+app.use("/api/resume", resumeRoute);
+app.use("/api/cv", cvRoute);
+app.use("/api/coverletter", coverLetterRoute);
 
 app.get("/", (req, res) => {
   res.send("<a href='/auth/google'>Login with Google</a>");
@@ -63,11 +64,11 @@ app.get("/logout", (req, res) => {
     res.redirect("/");
   });
 });
-
-app.listen(process.env.PORT || 4501, () => {
+setInterval(cleanupBlacklist, 24 * 60 * 60 * 1000);
+app.listen(process.env.PORT || 4500, () => {
   try {
     dbConnection();
-    console.log("Server is running on port 4500/4501...");
+    console.log("Server is running on port 4500...");
   } catch (error) {
     console.log("Server connection issue", error);
   }

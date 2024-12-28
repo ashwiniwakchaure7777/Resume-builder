@@ -11,6 +11,21 @@ module.exports.authentication = async (req, res, next) => {
       });
     }
 
+    const blacklistFilePath = path.join(__dirname, "blacklist.txt");
+
+    const isTokenBlacklisted = (token) => {
+      const blacklist = fs.readFileSync(blacklistFilePath, "utf-8");
+      return blacklist
+        .split("\n")
+        .some((line) => line.startsWith(`${token} |`));
+    };
+
+    if (!token || isTokenBlacklisted(token)) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Unauthorized or blacklisted" });
+    }
+    
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
 
     req.user = decoded;

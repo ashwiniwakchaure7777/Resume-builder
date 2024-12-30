@@ -64,7 +64,8 @@ app.get("/logout", (req, res) => {
     res.redirect("/");
   });
 });
-setInterval(cleanupBlacklist, 24 * 60 * 60 * 1000);
+cleanupBlacklist();
+
 app.listen(process.env.PORT || 4500, () => {
   try {
     dbConnection();

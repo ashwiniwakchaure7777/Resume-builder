@@ -220,27 +220,84 @@ module.exports.resetForgotPassword = async (req, res) => {
   }
 };
 
+// module.exports.logout = async (req, res) => {
+//   try {
+//     const token = req.headers.authorization?.split(" ")[1];
+//     const blacklistFilePath =
+//       "D:\\All Repos\\Personal\\Resume Builder\\Resume-Builder\\blacklist.json";
+
+//     if (!token) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Token missing",
+//       });
+//     }
+//     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+//     console.log(decoded, "decoded");
+
+//     const expiresAt = decoded?.exp
+//       ? new Date(decoded.exp * 1000).toISOString()
+//       : new Date() + new Date().getHours + 24;
+
+//     const blacklisted = JSON.parse(fs.readFileSync(blacklistFilePath, "utf-8"));
+//     blacklisted.token = expiresAt;
+
+//     fs.writeFileSync(blacklistFilePath, JSON.stringify(blacklisted));
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Logged out successfully",
+//     });
+//   } catch (error) {
+//     ERROR_RESPONSE(res, error);
+//   }
+// };
+
 module.exports.logout = async (req, res) => {
   try {
     const token = req.headers.authorization?.split(" ")[1];
+    const blacklistFilePath = path.join(__dirname, "../blacklist.json");
 
-    const blacklistFilePath = path.join(__dirname, "blacklist.txt");
-    
     if (!token) {
-      return res.status(400).json({ success: false, message: "Token missing" });
+      return res.status(400).json({
+        success: false,
+        message: "Token missing",
+      });
     }
 
-    const decoded = jwt.decode(token);
-    const expiresAt = decoded.exp
-      ? new Date(decoded.exp * 1000).toISOString()
-      : null;
+    // Verify the token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
     console.log(decoded, "decoded");
 
-    const entry = `${token} | ${expiresAt}\n`;
-    fs.appendFileSync(blacklistFilePath, entry, "utf-8");
+    const expiresAt = decoded?.exp
+      ? new Date(decoded.exp * 1000).toISOString()
+      : new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
-    res.status(200).json({ success: true, message: "Logged out successfully" });
+    // Read existing blacklist or initialize an empty object
+    let blacklisted = {};
+    if (fs.existsSync(blacklistFilePath)) {
+      const fileContent = fs.readFileSync(blacklistFilePath, "utf-8");
+      blacklisted = JSON.parse(fileContent);
+    }
+
+    // Add the token to the blacklist with its expiration time
+    blacklisted[token] = expiresAt;
+
+    // Write back to the blacklist file
+    fs.writeFileSync(blacklistFilePath, JSON.stringify(blacklisted, null, 2));
+
+    res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
   } catch (error) {
-    ERROR_RESPONSE(res, error);
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred during logout.",
+      error: error.message,
+    });
   }
 };

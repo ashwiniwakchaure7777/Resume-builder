@@ -57,88 +57,74 @@ const resumeSchema = new mongoose.Schema(
         },
       },
     ],
-    education: [
-      {
-        studyProgram: {
-          type: String,
-        },
-        institution: {
-          type: String,
-        },
-        startDate: {
-          type: Date,
-          default: new Date(),
-        },
-        endDate: {
-          type: Date,
-          default: new Date(),
-        },
-        cityCountryCGPA: {
-          type: String,
-        },
-        courseProject: {
-          type: String,
-        },
-      },
-    ],
-    work: [
-      {
-        workPosition: {
-          type: String,
-        },
-        company: {
-          type: String,
-        },
-        startDate: {
-          type: Date,
-          default: new Date(),
-        },
-        endDate: {
-          type: Date,
-          default: new Date(),
-        },
-        companyDescription: {
-          type: String,
-        },
-        taskAchiement: {
-          type: String,
-        },
-        contact: [
-          {
-            contactPerson: { type: String },
-            contactInfo: { type: String },
-          },
-        ],
-      },
-    ],
-    certificate: [
-      {
-        certificateName: {
-          type: String,
-        },
-        certificateDescription: {
-          type: String,
-        },
-      },
-    ],
-    project: [
-      {
-        projectName: {
-          type: String,
-        },
-        startDate: {
-          type: Date,
-          default: new Date(),
-        },
-        endDate: {
-          type: Date,
-          default: new Date(),
-        },
-        projectDescription: {
-          type: String,
-        },
-      },
-    ],
+    // education: [
+    //   {
+    //     studyProgram: {
+    //       type: String,
+    //     },
+    //     institution: {
+    //       type: String,
+    //     },
+    //     startDate: {
+    //       type: Date,
+    //       default: new Date(),
+    //     },
+    //     endDate: {
+    //       type: Date,
+    //       default: new Date(),
+    //     },
+    //     cityCountryCGPA: {
+    //       type: String,
+    //     },
+    //     courseProject: {
+    //       type: String,
+    //     },
+    //   },
+    // ],
+    // work: [
+    //   {
+    //     workPosition: {
+    //       type: String,
+    //     },
+    //     company: {
+    //       type: String,
+    //     },
+    //     startDate: {
+    //       type: Date,
+    //       default: new Date(),
+    //     },
+    //     endDate: {
+    //       type: Date,
+    //       default: new Date(),
+    //     },
+    //     companyDescription: {
+    //       type: String,
+    //     },
+    //     taskAchiement: {
+    //       type: String,
+    //     },
+    //     contact: [
+    //       {
+    //         contactPerson: { type: String },
+    //         contactInfo: { type: String },
+    //       },
+    //     ],
+    //   },
+    // ],
+    // certificate: [
+    //   {
+    //     certificateName: {
+    //       type: String,
+    //     },
+    //     certificateDescription: {
+    //       type: String,
+    //     },
+    //   },
+    // ],
+    // project: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "project",
+    // },
     achievement: [
       {
         achievementName: {

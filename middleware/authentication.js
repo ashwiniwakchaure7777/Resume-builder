@@ -1,32 +1,39 @@
 const jwt = require("jsonwebtoken");
+const path = require("path");
+const fs = require("fs");
 
 module.exports.authentication = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
 
+    const blacklistFilePath = path.join(__dirname, "../blacklist.json");
+
     if (!token) {
-      return res.status(201).json({
+      return res.status(401).json({
         success: false,
-        message: "Login first",
+        message: "Please login first",
       });
     }
 
-    const blacklistFilePath = path.join(__dirname, "blacklist.txt");
+    const blacklisted = fs.existsSync(blacklistFilePath)
+      ? JSON.parse(fs.readFileSync(blacklistFilePath, "utf-8"))
+      : {};
 
-    const isTokenBlacklisted = (token) => {
-      const blacklist = fs.readFileSync(blacklistFilePath, "utf-8");
-      return blacklist
-        .split("\n")
-        .some((line) => line.startsWith(`${token} |`));
-    };
-
-    if (!token || isTokenBlacklisted(token)) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Unauthorized or blacklisted" });
+    if (blacklisted[token]) {
+      return res.status(401).json({
+        success: false,
+        message: "Token has expired, Please login again",
+      });
     }
-    
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+
+    if (!decoded) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid Token",
+      });
+    }
 
     req.user = decoded;
     console.log(decoded);
